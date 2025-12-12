@@ -6,6 +6,7 @@ package predicates
 import (
 	"fmt"
 	"slices"
+	"sync"
 
 	"github.com/carabiner-dev/attestation"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -29,6 +30,57 @@ func New() *Parser {
 }
 
 type Parser struct{}
+
+// Parse takes JSON data and returns any of the supported predicates if it parses
+func (p *Parser) Parse(data []byte) (attestation.Predicate, error) {
+	var o sync.Once
+	var pred attestation.Predicate
+
+	// This function catches the first predicate to be successfully parsed
+	setPredicateIfNotNil := func(a attestation.Predicate, err error) {
+		if err != nil {
+			return
+		}
+		if pred != nil {
+			return
+		}
+		o.Do(func() { pred = a })
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(6)
+
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParsePolicyPredicate(data))
+	}()
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParsePolicySetPredicate(data))
+	}()
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParsePolicyGroupPredicate(data))
+	}()
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParseResultPredicate(data))
+	}()
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParseResultSetPredicate(data))
+	}()
+	go func() {
+		defer wg.Done()
+		setPredicateIfNotNil(p.ParseResultGroupPredicate(data))
+	}()
+	wg.Wait()
+
+	if pred == nil {
+		return nil, attestation.ErrNotCorrectFormat
+	}
+	return pred, nil
+}
 
 func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, error) {
 	set := &papi.PolicySet{}
