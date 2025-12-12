@@ -12,6 +12,9 @@ import (
 	v1 "github.com/carabiner-dev/policy/api/v1"
 )
 
+// Ensure we are implementing the attestation framework predicate interface
+var _ attestation.Predicate = (*PolicySet)(nil)
+
 const PolicySetPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/policyset/v0"
 
 // PolicySet (predicate.Policy) is a wrapper around the policySet proto
