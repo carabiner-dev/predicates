@@ -5,7 +5,7 @@ go 1.24.11
 require (
 	github.com/carabiner-dev/attestation v0.2.0
 	github.com/carabiner-dev/policy v0.4.1-0.20251211203139-302be2dfaf0d
-	google.golang.org/protobuf v1.36.10
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
