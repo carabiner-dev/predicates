@@ -6,6 +6,7 @@ package predicates
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"sync"
 
 	"github.com/carabiner-dev/attestation"
@@ -87,6 +88,8 @@ func (p *Parser) Parse(data []byte) (attestation.Predicate, error) {
 	return pred, nil
 }
 
+// PolicySet variant ===================
+
 type ParserPolicySetPredicate struct{}
 
 func NewParserPolicySetPredicate() *ParserPolicySetPredicate {
@@ -105,6 +108,9 @@ func (p *ParserPolicySetPredicate) SupportsType(predTypes ...attestation.Predica
 func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, error) {
 	set := &papi.PolicySet{}
 	if err := protojson.Unmarshal(data, set); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 
@@ -114,6 +120,8 @@ func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, er
 		verification: nil,
 	}, nil
 }
+
+// Policy variant ===================
 
 type ParserPolicyPredicate struct{}
 
@@ -133,6 +141,9 @@ func (p *ParserPolicyPredicate) SupportsType(predTypes ...attestation.PredicateT
 func (p *Parser) ParsePolicyPredicate(data []byte) (attestation.Predicate, error) {
 	policy := &papi.Policy{}
 	if err := protojson.Unmarshal(data, policy); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 	return &Policy{
@@ -140,6 +151,8 @@ func (p *Parser) ParsePolicyPredicate(data []byte) (attestation.Predicate, error
 		Parsed: policy,
 	}, nil
 }
+
+// PolicyGroup variant ===================
 
 type ParserPolicyGroupPredicate struct{}
 
@@ -158,6 +171,9 @@ func (p *ParserPolicyGroupPredicate) SupportsType(predTypes ...attestation.Predi
 func (p *Parser) ParsePolicyGroupPredicate(data []byte) (attestation.Predicate, error) {
 	group := &papi.PolicyGroup{}
 	if err := protojson.Unmarshal(data, group); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 	return &PolicyGroup{
@@ -165,6 +181,8 @@ func (p *Parser) ParsePolicyGroupPredicate(data []byte) (attestation.Predicate, 
 		Parsed: group,
 	}, nil
 }
+
+// Result variant ===================
 
 type ParserResultPredicate struct{}
 
@@ -184,6 +202,9 @@ func (p *ParserResultPredicate) SupportsType(predTypes ...attestation.PredicateT
 func (p *Parser) ParseResultPredicate(data []byte) (attestation.Predicate, error) {
 	res := &papi.Result{}
 	if err := protojson.Unmarshal(data, res); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 
@@ -192,6 +213,8 @@ func (p *Parser) ParseResultPredicate(data []byte) (attestation.Predicate, error
 		Data:   data,
 	}, nil
 }
+
+// ResultSet variant ===================
 
 type ParserResultSetPredicate struct{}
 
@@ -210,6 +233,9 @@ func (p *ParserResultSetPredicate) SupportsType(predTypes ...attestation.Predica
 func (p *Parser) ParseResultSetPredicate(data []byte) (attestation.Predicate, error) {
 	res := &papi.ResultSet{}
 	if err := protojson.Unmarshal(data, res); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 
@@ -218,6 +244,8 @@ func (p *Parser) ParseResultSetPredicate(data []byte) (attestation.Predicate, er
 		Data:   data,
 	}, nil
 }
+
+// ResultGroup variant ===================
 
 type ParserResultGroupPredicate struct{}
 
@@ -236,6 +264,9 @@ func (p *ParserResultGroupPredicate) SupportsType(predTypes ...attestation.Predi
 func (p *Parser) ParseResultGroupPredicate(data []byte) (attestation.Predicate, error) {
 	res := &papi.ResultGroup{}
 	if err := protojson.Unmarshal(data, res); err != nil {
+		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
+			return nil, attestation.ErrNotCorrectFormat
+		}
 		return nil, fmt.Errorf("unmarshaling predicate data: %w", err)
 	}
 
