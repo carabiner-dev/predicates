@@ -5,6 +5,8 @@ package predicates
 
 import (
 	"bytes"
+	"encoding/json"
+	"sync"
 	"testing"
 
 	"github.com/carabiner-dev/attestation"
@@ -17,6 +19,275 @@ func TestNew(t *testing.T) {
 	parser := New()
 	if parser == nil {
 		t.Fatal("New() returned nil")
+	}
+}
+
+func TestParser_Parse(t *testing.T) {
+	tests := []struct {
+		name         string
+		data         []byte
+		wantErr      bool
+		expectedType attestation.PredicateType
+	}{
+		{
+			name: "parses PolicySet predicate",
+			data: []byte(`{
+				"id": "test-policyset",
+				"meta": {
+					"runtime": "starlark/v0",
+					"version": 1
+				},
+				"policies": [
+					{
+						"id": "test-policy",
+						"meta": {"runtime": "starlark/v0"}
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PolicySetPredicateType,
+		},
+		{
+			name: "parses Policy predicate",
+			data: []byte(`{
+				"id": "standalone-policy",
+				"meta": {
+					"runtime": "starlark/v0",
+					"description": "Standalone policy test",
+					"version": 1
+				},
+				"tenets": [
+					{
+						"id": "test-tenet",
+						"runtime": "starlark/v0",
+						"code": "def check(): return True"
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PredicateTypePolicy,
+		},
+		{
+			name: "parses PolicyGroup predicate",
+			data: []byte(`{
+				"id": "security-group",
+				"meta": {
+					"description": "Security policy group",
+					"version": 1,
+					"runtime": "starlark/v0"
+				},
+				"blocks": [
+					{
+						"id": "block-1",
+						"meta": {"description": "Test block"},
+						"policies": []
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PredicateTypePolicyGroup,
+		},
+		{
+			name: "parses Result predicate",
+			data: []byte(`{
+				"status": "PASSED",
+				"dateStart": "2025-01-15T10:00:00Z",
+				"dateEnd": "2025-01-15T10:00:05Z",
+				"policy": {
+					"id": "test-policy",
+					"version": 1
+				},
+				"evalResults": [
+					{
+						"id": "tenet-1",
+						"status": "PASSED",
+						"output": {"verified": true}
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PredicateTypeResult,
+		},
+		{
+			name: "parses ResultSet predicate",
+			data: []byte(`{
+				"status": "PASSED",
+				"dateStart": "2025-01-15T11:00:00Z",
+				"dateEnd": "2025-01-15T11:00:30Z",
+				"policySet": {
+					"id": "baseline-set",
+					"version": 1
+				},
+				"results": [
+					{
+						"status": "PASSED",
+						"policy": {"id": "policy-1"}
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PredicateTypeResultSet,
+		},
+		{
+			name: "parses ResultGroup predicate",
+			data: []byte(`{
+				"status": "PASSED",
+				"dateStart": "2025-01-15T12:00:00Z",
+				"dateEnd": "2025-01-15T12:00:45Z",
+				"group": {
+					"id": "test-group",
+					"version": 1
+				},
+				"evalResults": [
+					{
+						"status": "PASSED",
+						"id": "block-1",
+						"results": []
+					}
+				]
+			}`),
+			wantErr:      false,
+			expectedType: PredicateTypeResultGroup,
+		},
+		{
+			name:    "fails on invalid JSON",
+			data:    []byte(`{invalid json`),
+			wantErr: true,
+		},
+		{
+			name:    "fails on empty data",
+			data:    []byte(``),
+			wantErr: true,
+		},
+		{
+			name:    "fails on null data",
+			data:    nil,
+			wantErr: true,
+		},
+		{
+			name: "fails on unrecognized structure",
+			data: []byte(`{
+				"unknown_field": "value",
+				"another_field": 123,
+				"nested": {
+					"data": "that doesn't match any predicate"
+				}
+			}`),
+			wantErr: true,
+		},
+	}
+
+	parser := New()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			pred, err := parser.Parse(tt.data)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if pred == nil {
+					t.Error("Parse() returned nil predicate when expecting success")
+					return
+				}
+				if pred.GetType() != tt.expectedType {
+					t.Errorf("Parse() returned type %v, expected %v", pred.GetType(), tt.expectedType)
+				}
+			}
+		})
+	}
+}
+
+func TestParser_Parse_Concurrency(t *testing.T) {
+	// Test that Parse can be called concurrently without issues
+	parser := New()
+
+	testData := []struct {
+		name string
+		data []byte
+	}{
+		{
+			name: "policy",
+			data: []byte(`{"id":"p1","meta":{"runtime":"starlark/v0"},"tenets":[{"id":"t1","runtime":"starlark/v0","code":"x"}]}`),
+		},
+		{
+			name: "policyset",
+			data: []byte(`{"id":"ps1","meta":{"runtime":"starlark/v0"},"policies":[]}`),
+		},
+		{
+			name: "result",
+			data: []byte(`{"status":"PASSED","policy":{"id":"p1"},"evalResults":[]}`),
+		},
+	}
+
+	var wg sync.WaitGroup
+	for range 10 {
+		for _, td := range testData {
+			wg.Add(1)
+			go func(data []byte, name string) {
+				defer wg.Done()
+				pred, err := parser.Parse(data)
+				if err != nil {
+					t.Errorf("Concurrent Parse() failed for %s: %v", name, err)
+					return
+				}
+				if pred == nil {
+					t.Errorf("Concurrent Parse() returned nil predicate for %s", name)
+				}
+			}(td.data, td.name)
+		}
+	}
+	wg.Wait()
+}
+
+func TestParser_Parse_DataPreservation(t *testing.T) {
+	parser := New()
+
+	originalData := []byte(`{
+		"id": "verify-policy",
+		"meta": {
+			"runtime": "starlark/v0",
+			"description": "Verification policy",
+			"version": 1
+		},
+		"tenets": [
+			{
+				"id": "check-signature",
+				"runtime": "starlark/v0",
+				"code": "def verify(): return True",
+				"title": "Verify signature"
+			}
+		]
+	}`)
+
+	pred, err := parser.Parse(originalData)
+	if err != nil {
+		t.Fatalf("Parse() failed: %v", err)
+	}
+
+	if pred == nil {
+		t.Fatal("Parse() returned nil predicate")
+	}
+
+	// Verify data is preserved
+	predData := pred.GetData()
+	if predData == nil {
+		t.Error("Parse() result has nil data")
+		return
+	}
+
+	// Data should be preserved
+	var parsed, original map[string]interface{}
+	if err := json.Unmarshal(predData, &parsed); err != nil {
+		t.Errorf("Failed to unmarshal predicate data: %v", err)
+	}
+	if err := json.Unmarshal(originalData, &original); err != nil {
+		t.Errorf("Failed to unmarshal original data: %v", err)
+	}
+
+	// Check that key fields are preserved
+	if parsed["id"] != original["id"] {
+		t.Errorf("ID not preserved: got %v, want %v", parsed["id"], original["id"])
 	}
 }
 
