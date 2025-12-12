@@ -17,12 +17,17 @@ import (
 // PredicateTypes is a slice of all the predicate types
 var PredicateTypes = []attestation.PredicateType{
 	PredicateTypePolicy,
-	PolicySetPredicateType,
+	PredicateTypePolicySet,
 	PredicateTypePolicyGroup,
 
 	PredicateTypeResult,
 	PredicateTypeResultSet,
 	PredicateTypeResultGroup,
+
+	// Old constants
+	PredicateTypePolicy0,
+	PredicateTypePolicySet0,
+	PredicateTypeResult0,
 }
 
 func New() *Parser {
@@ -82,6 +87,21 @@ func (p *Parser) Parse(data []byte) (attestation.Predicate, error) {
 	return pred, nil
 }
 
+type ParserPolicySetPredicate struct{}
+
+func NewParserPolicySetPredicate() *ParserPolicySetPredicate {
+	return &ParserPolicySetPredicate{}
+}
+
+func (p *ParserPolicySetPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParsePolicySetPredicate(data)
+}
+
+func (p *ParserPolicySetPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypePolicySet) ||
+		slices.Contains(predTypes, PredicateTypePolicySet0)
+}
+
 func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, error) {
 	set := &papi.PolicySet{}
 	if err := protojson.Unmarshal(data, set); err != nil {
@@ -95,6 +115,21 @@ func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, er
 	}, nil
 }
 
+type ParserPolicyPredicate struct{}
+
+func NewParserPolicyPredicate() *ParserPolicyPredicate {
+	return &ParserPolicyPredicate{}
+}
+
+func (p *ParserPolicyPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParsePolicyPredicate(data)
+}
+
+func (p *ParserPolicyPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypePolicy) ||
+		slices.Contains(predTypes, PredicateTypePolicy0)
+}
+
 func (p *Parser) ParsePolicyPredicate(data []byte) (attestation.Predicate, error) {
 	policy := &papi.Policy{}
 	if err := protojson.Unmarshal(data, policy); err != nil {
@@ -106,6 +141,20 @@ func (p *Parser) ParsePolicyPredicate(data []byte) (attestation.Predicate, error
 	}, nil
 }
 
+type ParserPolicyGroupPredicate struct{}
+
+func NewParserPolicyGroupPredicate() *ParserPolicyGroupPredicate {
+	return &ParserPolicyGroupPredicate{}
+}
+
+func (p *ParserPolicyGroupPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParsePolicyGroupPredicate(data)
+}
+
+func (p *ParserPolicyGroupPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypePolicyGroup)
+}
+
 func (p *Parser) ParsePolicyGroupPredicate(data []byte) (attestation.Predicate, error) {
 	group := &papi.PolicyGroup{}
 	if err := protojson.Unmarshal(data, group); err != nil {
@@ -115,6 +164,21 @@ func (p *Parser) ParsePolicyGroupPredicate(data []byte) (attestation.Predicate, 
 		Data:   data,
 		Parsed: group,
 	}, nil
+}
+
+type ParserResultPredicate struct{}
+
+func NewParserResultPredicate() *ParserResultPredicate {
+	return &ParserResultPredicate{}
+}
+
+func (p *ParserResultPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParseResultPredicate(data)
+}
+
+func (p *ParserResultPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypeResult) ||
+		slices.Contains(predTypes, PredicateTypeResult0)
 }
 
 func (p *Parser) ParseResultPredicate(data []byte) (attestation.Predicate, error) {
@@ -129,6 +193,20 @@ func (p *Parser) ParseResultPredicate(data []byte) (attestation.Predicate, error
 	}, nil
 }
 
+type ParserResultSetPredicate struct{}
+
+func NewParserResultSetPredicate() *ParserResultSetPredicate {
+	return &ParserResultSetPredicate{}
+}
+
+func (p *ParserResultSetPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParseResultSetPredicate(data)
+}
+
+func (p *ParserResultSetPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypeResultSet)
+}
+
 func (p *Parser) ParseResultSetPredicate(data []byte) (attestation.Predicate, error) {
 	res := &papi.ResultSet{}
 	if err := protojson.Unmarshal(data, res); err != nil {
@@ -139,6 +217,20 @@ func (p *Parser) ParseResultSetPredicate(data []byte) (attestation.Predicate, er
 		Parsed: res,
 		Data:   data,
 	}, nil
+}
+
+type ParserResultGroupPredicate struct{}
+
+func NewParserResultGroupPredicate() *ParserResultGroupPredicate {
+	return &ParserResultGroupPredicate{}
+}
+
+func (p *ParserResultGroupPredicate) Parse(data []byte) (attestation.Predicate, error) {
+	return New().ParseResultGroupPredicate(data)
+}
+
+func (p *ParserResultGroupPredicate) SupportsType(predTypes ...attestation.PredicateType) bool {
+	return slices.Contains(predTypes, PredicateTypeResultGroup)
 }
 
 func (p *Parser) ParseResultGroupPredicate(data []byte) (attestation.Predicate, error) {

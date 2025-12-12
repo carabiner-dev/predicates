@@ -45,7 +45,7 @@ func TestParser_Parse(t *testing.T) {
 				]
 			}`),
 			wantErr:      false,
-			expectedType: PolicySetPredicateType,
+			expectedType: PredicateTypePolicySet,
 		},
 		{
 			name: "parses Policy predicate",
@@ -1366,7 +1366,7 @@ func TestParser_SupportsType(t *testing.T) {
 		},
 		{
 			name:      "supports PolicySet type",
-			predTypes: []attestation.PredicateType{PolicySetPredicateType},
+			predTypes: []attestation.PredicateType{PredicateTypePolicySet},
 			want:      true,
 		},
 		{

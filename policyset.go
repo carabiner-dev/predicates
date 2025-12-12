@@ -16,8 +16,8 @@ import (
 var _ attestation.Predicate = (*PolicySet)(nil)
 
 const (
-	PolicySetPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/policyset/v0"
-	PredicateTypePolicySet attestation.PredicateType = "https://carabiner.dev/ampel/policyset/v0.0.1"
+	PredicateTypePolicySet  attestation.PredicateType = "https://carabiner.dev/ampel/policyset/v0"
+	PredicateTypePolicySet0 attestation.PredicateType = "https://carabiner.dev/ampel/policyset/v0.0.1"
 )
 
 // PolicySet (predicate.Policy) is a wrapper around the policySet proto
@@ -50,7 +50,7 @@ func (set *PolicySet) SetType(attestation.PredicateType) error {
 }
 
 func (set *PolicySet) GetType() attestation.PredicateType {
-	return PolicySetPredicateType
+	return PredicateTypePolicySet
 }
 
 // SetVerification gets the signature verification data from the envelope
