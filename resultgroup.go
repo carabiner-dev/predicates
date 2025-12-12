@@ -15,7 +15,7 @@ import (
 // Ensure we are implementing the attestation framework predicate interface
 var _ attestation.Predicate = (*ResultGroup)(nil)
 
-const PredicateTypeResultGroup attestation.PredicateType = "https://carabiner.dev/ampel/resultset/v0"
+const PredicateTypeResultGroup attestation.PredicateType = "https://carabiner.dev/ampel/resultgroup/v0"
 
 // ResultGroup (or rather predicates.ResultSet) is a wrapper around the policyset
 // evaluation results proto message that ampel generates with --attest
