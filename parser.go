@@ -8,19 +8,20 @@ import (
 	"slices"
 
 	"github.com/carabiner-dev/attestation"
-	papi "github.com/carabiner-dev/policy/api/v1"
 	"google.golang.org/protobuf/encoding/protojson"
+
+	papi "github.com/carabiner-dev/policy/api/v1"
 )
 
 // PredicateTypes is a slice of all the predicate types
 var PredicateTypes = []attestation.PredicateType{
-	PolicyPredicateType,
+	PredicateTypePolicy,
 	PolicySetPredicateType,
-	PolicyGroupPredicateType,
+	PredicateTypePolicyGroup,
 
-	ResultPredicateType,
-	ResultSetPredicateType,
-	ResultGroupPredicateType,
+	PredicateTypeResult,
+	PredicateTypeResultSet,
+	PredicateTypeResultGroup,
 }
 
 func New() *Parser {

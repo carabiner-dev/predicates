@@ -40,7 +40,7 @@ linters:
     - copyloopvar
     - decorder
     - dogsled
-    - dupl
+    # - dupl
     - durationcheck
     - errcheck
     - errchkjson

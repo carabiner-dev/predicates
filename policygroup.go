@@ -15,7 +15,7 @@ import (
 // Ensure we are implementing the attestation framework predicate interface
 var _ attestation.Predicate = (*PolicyGroup)(nil)
 
-const PolicyGroupPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/policygroup/v0"
+const PredicateTypePolicyGroup attestation.PredicateType = "https://carabiner.dev/ampel/policygroup/v0"
 
 // Policy (or rather predicate.Policy) is a wrapper around the policy proto
 // message that implements the ampel attestation predicate interface.
@@ -84,7 +84,7 @@ func (grp *PolicyGroup) MarshalJSON() ([]byte, error) {
 	}
 
 	// Otherwise, marshal the value
-	return json.Marshal(grp.Parsed) //nolint:musttag // This has a custom marshaller
+	return json.Marshal(grp.Parsed)
 }
 
 func (grp *PolicyGroup) SetType(attestation.PredicateType) error {
@@ -92,5 +92,5 @@ func (grp *PolicyGroup) SetType(attestation.PredicateType) error {
 }
 
 func (grp *PolicyGroup) GetType() attestation.PredicateType {
-	return PolicyPredicateType
+	return PredicateTypePolicyGroup
 }

@@ -101,5 +101,5 @@ func (set *PolicySet) MarshalJSON() ([]byte, error) {
 	}
 
 	// Otherwise, marshal the value
-	return json.Marshal(set.Parsed) //nolint:musttag // This has a custom marshaller
+	return json.Marshal(set.Parsed)
 }

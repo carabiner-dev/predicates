@@ -15,7 +15,7 @@ import (
 // Ensure we are implementing the attestation framework predicate interface
 var _ attestation.Predicate = (*ResultSet)(nil)
 
-const ResultSetPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/resultset/v0"
+const PredicateTypeResultSet attestation.PredicateType = "https://carabiner.dev/ampel/resultset/v0"
 
 // Result (or rather predicates.ResultSet) is a wrapper around the policyset
 // evaluation results proto message that ampel generates with --attest
@@ -41,7 +41,7 @@ func (r *ResultSet) SetType(attestation.PredicateType) error {
 }
 
 func (r *ResultSet) GetType() attestation.PredicateType {
-	return PolicyPredicateType
+	return PredicateTypeResultSet
 }
 
 // SetVerification gets the signature verification data from the envelope
@@ -86,5 +86,5 @@ func (r *ResultSet) MarshalJSON() ([]byte, error) {
 	}
 
 	// Otherwise, marshal the value
-	return json.Marshal(r.Parsed) //nolint:musttag // This has a custom marshaller
+	return json.Marshal(r.Parsed)
 }

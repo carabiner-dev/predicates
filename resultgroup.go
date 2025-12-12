@@ -12,9 +12,10 @@ import (
 	v1 "github.com/carabiner-dev/policy/api/v1"
 )
 
+// Ensure we are implementing the attestation framework predicate interface
 var _ attestation.Predicate = (*ResultGroup)(nil)
 
-const ResultGroupPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/resultset/v0"
+const PredicateTypeResultGroup attestation.PredicateType = "https://carabiner.dev/ampel/resultset/v0"
 
 // ResultGroup (or rather predicates.ResultSet) is a wrapper around the policyset
 // evaluation results proto message that ampel generates with --attest
@@ -40,7 +41,7 @@ func (r *ResultGroup) SetType(attestation.PredicateType) error {
 }
 
 func (r *ResultGroup) GetType() attestation.PredicateType {
-	return PolicyPredicateType
+	return PredicateTypeResultGroup
 }
 
 // SetVerification gets the signature verification data from the envelope
@@ -85,5 +86,5 @@ func (r *ResultGroup) MarshalJSON() ([]byte, error) {
 	}
 
 	// Otherwise, marshal the value
-	return json.Marshal(r.Parsed) //nolint:musttag // This has a custom marshaller
+	return json.Marshal(r.Parsed)
 }

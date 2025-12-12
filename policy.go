@@ -16,8 +16,8 @@ import (
 var _ attestation.Predicate = (*PolicyGroup)(nil)
 
 const (
-	PolicyPredicateType attestation.PredicateType = "https://carabiner.dev/ampel/policy/v0"
-	PredicateTypePolicy attestation.PredicateType = "https://carabiner.dev/ampel/policy/v0.0.1"
+	PredicateTypePolicy  attestation.PredicateType = "https://carabiner.dev/ampel/policy/v0"
+	PredicateTypePolicy0 attestation.PredicateType = "https://carabiner.dev/ampel/policy/v0.0.1"
 )
 
 // Policy (or rather predicate.Policy) is a wrapper around the policy proto
@@ -50,7 +50,7 @@ func (p *Policy) SetType(attestation.PredicateType) error {
 }
 
 func (p *Policy) GetType() attestation.PredicateType {
-	return PolicyPredicateType
+	return PredicateTypePolicy
 }
 
 // SetVerification gets the signature verification data from the envelope
@@ -95,5 +95,5 @@ func (p *Policy) MarshalJSON() ([]byte, error) {
 	}
 
 	// Otherwise, marshal the value
-	return json.Marshal(p.Parsed) //nolint:musttag // This has a custom marshaller
+	return json.Marshal(p.Parsed)
 }
