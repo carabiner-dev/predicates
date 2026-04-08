@@ -4,7 +4,7 @@ go 1.25.8
 
 require (
 	github.com/carabiner-dev/attestation v0.2.1
-	github.com/carabiner-dev/policy v0.4.3
+	github.com/carabiner-dev/policy v0.4.4
 	google.golang.org/protobuf v1.36.11
 )
 
@@ -13,13 +13,13 @@ require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.4.0 // indirect
 	github.com/carabiner-dev/signer v0.4.2 // indirect
-	github.com/carabiner-dev/vcslocator v0.4.0 // indirect
+	github.com/carabiner-dev/vcslocator v0.4.2 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/cyphar/filepath-securejoin v0.6.1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
-	github.com/go-git/go-billy/v5 v5.8.0 // indirect
-	github.com/go-git/go-git/v5 v5.17.0 // indirect
+	github.com/go-git/go-billy/v5 v5.8.1-0.20260407233109-416e0a5b21a8 // indirect
+	github.com/go-git/go-git/v5 v5.17.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/in-toto/attestation v1.2.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
