@@ -1,18 +1,18 @@
 module github.com/carabiner-dev/predicates
 
-go 1.25.8
+go 1.25.9
 
 require (
 	github.com/carabiner-dev/attestation v0.2.1
-	github.com/carabiner-dev/policy v0.4.4
+	github.com/carabiner-dev/policy v0.4.5
 	google.golang.org/protobuf v1.36.11
 )
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/ProtonMail/go-crypto v1.4.0 // indirect
-	github.com/carabiner-dev/signer v0.4.2 // indirect
+	github.com/ProtonMail/go-crypto v1.4.1 // indirect
+	github.com/carabiner-dev/signer v0.4.3 // indirect
 	github.com/carabiner-dev/vcslocator v0.4.2 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/cyphar/filepath-securejoin v0.6.1 // indirect
