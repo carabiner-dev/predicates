@@ -15,6 +15,12 @@ import (
 	papi "github.com/carabiner-dev/policy/api/v1"
 )
 
+const (
+	testCaseInvalidJSON = "invalid JSON"
+	testCaseEmptyData   = "empty data"
+	testCaseNullData    = "null data"
+)
+
 func TestNew(t *testing.T) {
 	parser := New()
 	if parser == nil {
@@ -373,17 +379,17 @@ func TestParser_ParsePolicySetPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
@@ -506,17 +512,17 @@ func TestParser_ParsePolicyPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
@@ -659,17 +665,17 @@ func TestParser_ParsePolicyGroupPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
@@ -848,17 +854,17 @@ func TestParser_ParseResultPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
@@ -1061,17 +1067,17 @@ func TestParser_ParseResultSetPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
@@ -1308,17 +1314,17 @@ func TestParser_ParseResultGroupPredicate(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "invalid JSON",
+			name:    testCaseInvalidJSON,
 			data:    []byte(`{invalid json`),
 			wantErr: true,
 		},
 		{
-			name:    "empty data",
+			name:    testCaseEmptyData,
 			data:    []byte(``),
 			wantErr: true,
 		},
 		{
-			name:    "null data",
+			name:    testCaseNullData,
 			data:    nil,
 			wantErr: true,
 		},
