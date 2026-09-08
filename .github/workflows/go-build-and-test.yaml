@@ -9,20 +9,39 @@ on:
       - "main"
   workflow_dispatch: {}
 
+permissions: {}
+
 jobs:
-  test:
+  go-versions:
     runs-on: ubuntu-latest
+    outputs:
+      stable: ${{ steps.versions.outputs.GO_MINOR_VERSION_STABLE }}
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-          persist-credentials: false
+        persist-credentials: false
+
+    - name: Determine Go versions
+      id: versions
+      uses: carabiner-dev/actions/go/versions@32587e82f960d49b36101e8c45d1956e511965d3 # v1.2.9
+
+  test:
+    needs: go-versions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Set up Go
       uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
       with:
-        go-version: '1.25'
+        go-version: ${{ needs.go-versions.outputs.stable }}
         check-latest: true
-        cache: false
+        cache: true
 
     - name: Test
       run: |
