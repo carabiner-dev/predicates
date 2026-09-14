@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/carabiner-dev/attestation v0.2.1
 	github.com/carabiner-dev/policy v0.5.5
+	github.com/hjson/hjson-go/v4 v4.7.1
 	google.golang.org/protobuf v1.36.12
 )
 

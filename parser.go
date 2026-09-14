@@ -106,6 +106,10 @@ func (p *ParserPolicySetPredicate) SupportsType(predTypes ...attestation.Predica
 }
 
 func (p *Parser) ParsePolicySetPredicate(data []byte) (attestation.Predicate, error) {
+	data, err := normalizeToJSON(data)
+	if err != nil {
+		return nil, err
+	}
 	set := &papi.PolicySet{}
 	if err := protojson.Unmarshal(data, set); err != nil {
 		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
@@ -139,6 +143,10 @@ func (p *ParserPolicyPredicate) SupportsType(predTypes ...attestation.PredicateT
 }
 
 func (p *Parser) ParsePolicyPredicate(data []byte) (attestation.Predicate, error) {
+	data, err := normalizeToJSON(data)
+	if err != nil {
+		return nil, err
+	}
 	policy := &papi.Policy{}
 	if err := protojson.Unmarshal(data, policy); err != nil {
 		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
@@ -169,6 +177,10 @@ func (p *ParserPolicyGroupPredicate) SupportsType(predTypes ...attestation.Predi
 }
 
 func (p *Parser) ParsePolicyGroupPredicate(data []byte) (attestation.Predicate, error) {
+	data, err := normalizeToJSON(data)
+	if err != nil {
+		return nil, err
+	}
 	group := &papi.PolicyGroup{}
 	if err := protojson.Unmarshal(data, group); err != nil {
 		if strings.Contains(err.Error(), "proto:") && strings.Contains(err.Error(), "unknown field") {
